@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Configurazione LogBack per gli esercizi S2-L1
+    
+    Questo file configura il sistema di logging per tutti gli esercizi,
+    permettendo di registrare errori, warning e informazioni in file separati.
+-->
+<configuration>
+    
+    <!-- Definizione dei pattern di output -->
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
+    <property name="SIMPLE_PATTERN" value="%d{HH:mm:ss.SSS} %-5level - %msg%n" />
+    
+    <!-- Appender per la console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${SIMPLE_PATTERN}</pattern>
+        </encoder>
+        <!-- Filtro per mostrare solo WARNING ed ERROR sulla console -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+    
+    <!-- Appender per file di log generale -->
+    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/esercizi.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/esercizi.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    
+    <!-- Appender specifico per errori -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/errori.log</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/errori.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <!-- Filtro per registrare solo errori -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    
+    <!-- Appender specifico per operazioni bancarie (Esercizio 3) -->
+    <appender name="FILE_BANCA" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/operazioni_bancarie.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{20} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/operazioni_bancarie.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+    </appender>
+    
+    <!-- Logger specifico per l'Esercizio 1 (Array) -->
+    <logger name="Esercizio1_ArrayGestioneErrori" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_ALL" />
+        <appender-ref ref="FILE_ERROR" />
+    </logger>
+    
+    <!-- Logger specifico per l'Esercizio 2 (Km/Litro) -->
+    <logger name="Esercizio2_CalcoloKmLitro" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_ALL" />
+        <appender-ref ref="FILE_ERROR" />
+    </logger>
+    
+    <!-- Logger specifico per l'Esercizio 3 (Sistema Bancario) -->
+    <logger name="Esercizio3_Main" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_ALL" />
+        <appender-ref ref="FILE_ERROR" />
+        <appender-ref ref="FILE_BANCA" />
+    </logger>
+    
+    <logger name="ContoCorrente" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE_BANCA" />
+    </logger>
+    
+    <logger name="ContoOnLine" level="DEBUG" additivity="false">
+        <appender-ref ref="FILE_BANCA" />
+    </logger>
+    
+    <logger name="BancaException" level="WARN" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_ERROR" />
+        <appender-ref ref="FILE_BANCA" />
+    </logger>
+    
+    <!-- Logger root (default) -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_ALL" />
+        <appender-ref ref="FILE_ERROR" />
+    </root>
+    
+</configuration>
+
+<!-- 
+    SPIEGAZIONE DELLA CONFIGURAZIONE:
+    
+    1. APPENDERS:
+       - CONSOLE: Mostra solo WARNING ed ERROR sulla console
+       - FILE_ALL: Registra tutti i log in esercizi.log
+       - FILE_ERROR: Registra solo gli errori in errori.log
+       - FILE_BANCA: Log specifico per operazioni bancarie
+    
+    2. ROLLING POLICY:
+       - I file di log vengono ruotati giornalmente
+       - Dimensione massima per file: 10MB (generale), 5MB (errori)
+       - Conservazione: 30 giorni (generale), 60 giorni (errori), 90 giorni (banca)
+       - Limite totale dimensione: 100MB (generale), 50MB (errori)
+    
+    3. LIVELLI DI LOG:
+       - ERROR: Errori gravi che richiedono attenzione
+       - WARN: Situazioni anomale ma gestibili
+       - INFO: Informazioni generali sull'esecuzione
+       - DEBUG: Informazioni dettagliate per il debugging
+    
+    4. LOGGER SPECIFICI:
+       - Ogni esercizio ha il suo logger configurato
+       - Le classi bancarie hanno logger dedicati
+       - BancaException ha un logger per le eccezioni personalizzate
+    
+    UTILIZZO:
+    Per utilizzare LogBack negli esercizi, aggiungere:
+    
+    import org.slf4j.Logger;
+    import org.slf4j.LoggerFactory;
+    
+    private static final Logger logger = LoggerFactory.getLogger(NomeClasse.class);
+    
+    Poi utilizzare:
+    logger.error("Messaggio di errore");
+    logger.warn("Messaggio di warning");
+    logger.info("Messaggio informativo");
+    logger.debug("Messaggio di debug");
+-->

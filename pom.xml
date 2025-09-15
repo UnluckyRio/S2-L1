@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <!-- Informazioni del progetto -->
+    <groupId>it.epicode.esercizi</groupId>
+    <artifactId>s2-l1-esercizi</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    
+    <name>EPICODE S2-L1 Esercizi</name>
+    <description>Esercizi per la lezione S2-L1: Debugging, Gestione Errori e Eccezioni</description>
+    
+    <!-- Proprietà del progetto -->
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!-- Versioni delle dipendenze -->
+        <logback.version>1.4.14</logback.version>
+        <slf4j.version>2.0.9</slf4j.version>
+        <junit.version>5.10.1</junit.version>
+    </properties>
+    
+    <!-- Dipendenze -->
+    <dependencies>
+        
+        <!-- SLF4J API - Interfaccia di logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        
+        <!-- Logback Classic - Implementazione di SLF4J -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        
+        <!-- Logback Core - Componenti core di Logback -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        
+        <!-- JUnit 5 per i test (opzionale) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+    </dependencies>
+    
+    <!-- Configurazione build -->
+    <build>
+        <plugins>
+            
+            <!-- Plugin per la compilazione -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            
+            <!-- Plugin per l'esecuzione -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>Esercizio3_Main</mainClass>
+                </configuration>
+            </plugin>
+            
+            <!-- Plugin per i test -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.2</version>
+            </plugin>
+            
+            <!-- Plugin per creare JAR eseguibile -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>Esercizio3_Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+        </plugins>
+    </build>
+    
+    <!-- Profili per diversi esercizi -->
+    <profiles>
+        
+        <!-- Profilo per Esercizio 0 (Debugging) -->
+        <profile>
+            <id>esercizio0</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>Esercizio0_Debugging</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profilo per Esercizio 1 (Array) -->
+        <profile>
+            <id>esercizio1</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>Esercizio1_ArrayGestioneErrori</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profilo per Esercizio 2 (Km/Litro) -->
+        <profile>
+            <id>esercizio2</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>Esercizio2_CalcoloKmLitro</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <!-- Profilo per Esercizio 3 (Sistema Bancario) -->
+        <profile>
+            <id>esercizio3</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>Esercizio3_Main</mainClass>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+    </profiles>
+    
+</project>
+
+<!-- 
+    COMANDI MAVEN UTILI:
+    
+    1. Compilare il progetto:
+       mvn compile
+    
+    2. Eseguire i test:
+       mvn test
+    
+    3. Creare il JAR:
+       mvn package
+    
+    4. Eseguire l'esercizio principale (Esercizio 3):
+       mvn exec:java
+    
+    5. Eseguire un esercizio specifico:
+       mvn exec:java -Pesercizio0
+       mvn exec:java -Pesercizio1
+       mvn exec:java -Pesercizio2
+       mvn exec:java -Pesercizio3
+    
+    6. Pulire il progetto:
+       mvn clean
+    
+    7. Compilare e eseguire in un comando:
+       mvn compile exec:java
+    
+    8. Creare JAR eseguibile:
+       mvn clean package
+       java -jar target/s2-l1-esercizi-1.0.0.jar
+    
+    STRUTTURA DIRECTORY MAVEN:
+    src/
+    ├── main/
+    │   ├── java/          # File .java
+    │   └── resources/     # File di configurazione (logback.xml)
+    └── test/
+        └── java/          # Test JUnit
+    
+    Se si preferisce usare Maven, spostare i file .java in src/main/java/
+    e logback.xml in src/main/resources/
+-->
